@@ -1,4 +1,3 @@
-import React from "react";
 import type { Task } from "../types/types";
 import TaskDate from "./TaskDate";
 import TaskPriority from "./TaskPriority";

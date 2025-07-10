@@ -7,7 +7,6 @@ import { searchTasks } from "../utils/index";
 
 import type { Filter, Task } from "../types/types";
 import { getTasks } from "../services";
-import { set } from "react-hook-form";
 
 const Tasks = () => {
   const navigate = useNavigate();
