@@ -1,22 +1,21 @@
-import { useContext, useState } from "react";
 import { BrowserRouter, Link, Route, Routes, useNavigate } from "react-router";
 
-import { LoginContext } from "./context/context";
 import AssigneeMe from "./pages/AssigneeMe";
 import CreateTask from "./pages/CreateTask";
 import Login from "./pages/Login";
 import Tasks from "./pages/Tasks";
 import UpdateTask from "./pages/UpdateTask";
 import AccessDenied from "./pages/AccessDenied";
+import { useAuthStore } from "./useAuthStore";
 
 // Navigation component
 
 const Navigation = () => {
   const navigate = useNavigate();
 
-  const { user, setUser } = useContext(LoginContext);
+  const { logOut, loggedInUser } = useAuthStore((state) => state);
 
-  if (!user) {
+  if (!loggedInUser) {
     return null;
   }
 
@@ -68,7 +67,7 @@ const Navigation = () => {
             ))}
             <button
               onClick={() => {
-                setUser(null);
+                logOut();
                 navigate("/login");
               }}
               className="ml-4 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 bg-gradient-secondary text-white hover-lift shadow-medium"
@@ -83,28 +82,24 @@ const Navigation = () => {
 };
 
 const TaskManagement = () => {
-  const [user, setUser] = useState(null);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      <LoginContext.Provider value={{ user, setUser }}>
-        <BrowserRouter>
-          <Navigation />
-          <div className="container mx-auto px-6 py-8">
-            <div className="animate-fade-in">
-              <Routes>
-                <Route index element={<Login />} />
-                <Route path="/login" element={<Login />} />
-
-                {user && <Route path="/tasks" element={<Tasks />} />}
-                {user && <Route path="/create" element={<CreateTask />} />}
-                {user && <Route path="/update/:id" element={<UpdateTask />} />}
-                {user && <Route path="/assignee-me" element={<AssigneeMe />} />}
-                <Route path="*" element={<AccessDenied />} />
-              </Routes>
-            </div>
+      <BrowserRouter>
+        <Navigation />
+        <div className="container mx-auto px-6 py-8">
+          <div className="animate-fade-in">
+            <Routes>
+              <Route index element={<Login />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/tasks" element={<Tasks />} />
+              <Route path="/create" element={<CreateTask />} />
+              <Route path="/update/:id" element={<UpdateTask />} />
+              <Route path="/assignee-me" element={<AssigneeMe />} />
+              <Route path="*" element={<AccessDenied />} />
+            </Routes>
           </div>
-        </BrowserRouter>
-      </LoginContext.Provider>
+        </div>
+      </BrowserRouter>
     </div>
   );
 };

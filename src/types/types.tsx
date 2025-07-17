@@ -23,4 +23,5 @@ export interface Task {
 export interface Filter {
   status?: string;
   priority?: string;
+  title?: string;
 }

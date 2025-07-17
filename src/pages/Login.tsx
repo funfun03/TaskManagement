@@ -1,10 +1,12 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { login } from "../services";
+// import { login } from "../services";
 import { useNavigate } from "react-router";
 import { useContext } from "react";
 import { LoginContext } from "../context/context";
+import { apiClient } from "../libraries/api-client";
+import { useAuthStore } from "../useAuthStore";
 
 interface IFormInput {
   username: string;
@@ -26,26 +28,32 @@ const validationSchema: yup.ObjectSchema<IFormInput> = yup.object({
 });
 
 const Login = () => {
-  const { setUser } = useContext(LoginContext);
-  const navigate = useNavigate(); // Use navigate from react-router-dom for redirection
+  // const { setUser } = useContext(LoginContext);
+  const navigate = useNavigate();
+  const { login } = useAuthStore((state) => state);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, isValid, dirtyFields },
   } = useForm<IFormInput>({
     resolver: yupResolver(validationSchema),
-    mode: "onChange", // Validate on change for better UX
+    mode: "onChange",
     defaultValues: {
       username: "tungnt@softech.vn",
-      password: "123456789", // Example default value
+      password: "123456789",
     },
   });
 
   const onSubmit = async (data: IFormInput): Promise<void> => {
     try {
-      const user = await login(data.username, data.password);
-      setUser(user); // Set the user in context
-      navigate("/tasks"); // Redirect to tasks page on successful login
+      await login({
+        username: data.username,
+        password: data.password,
+        navigate,
+      });
+      // navigate("/tasks");
+      // const user = await login(data.username, data.password);
+      // setUser(user);
     } catch (error) {
       console.error("Login error:", error);
       alert("Login failed. Please try again.");

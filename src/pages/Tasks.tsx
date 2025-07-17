@@ -7,22 +7,40 @@ import { searchTasks } from "../utils/index";
 
 import type { Filter, Task } from "../types/types";
 import { getTasks } from "../services";
+import apiClient from "../libraries/api-client-simple";
+import { set } from "react-hook-form";
+import { useAuthStore } from "../useAuthStore";
 
 const Tasks = () => {
   const navigate = useNavigate();
-  const [tasks, setTasks] = React.useState<Task[]>([]);
+  const [tasks, setTasks] = React.useState<any[]>([]);
   const [filters, setFilters] = React.useState<Filter>({});
+  const {
+    logOut,
+    access_token,
+    refresh_token,
+    changeAccessToken,
+    changeRefreshToken,
+    loggedInUser,
+  } = useAuthStore((state) => state);
 
   useEffect(() => {
-    const fecthTasks = async () => {
+    if (!loggedInUser) {
+      navigate("/login");
+    }
+  }, [loggedInUser, navigate]);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
       try {
-        const data = await getTasks();
-        setTasks(data);
+        const tasks = (await apiClient.get("workspaces/tasks")) as any;
+        console.log("Fetched tasks:", tasks);
+        setTasks(tasks);
       } catch (error) {
         console.error("Failed to fetch tasks:", error);
       }
     };
-    fecthTasks();
+    fetchTasks();
   }, []);
 
   const handleSearch = (newFilters: Filter) => {
@@ -31,6 +49,14 @@ const Tasks = () => {
 
   const handleEdit = (taskId: string | number | undefined) => {
     navigate(`/update/${taskId}`);
+  };
+
+  const handleChangeAccessToken = async () => {
+    await changeAccessToken();
+  };
+
+  const handleChangeRefreshToken = async () => {
+    await changeRefreshToken();
   };
 
   return (
