@@ -5,24 +5,17 @@ import TaskFilterForm from "../components/TaskFilterForm";
 import TaskList from "../components/TaskList";
 import { searchTasks } from "../utils/index";
 
-import type { Filter, Task } from "../types/types";
-import { getTasks } from "../services";
+import type { Filter } from "../types/types";
+// import { getTasks } from "../services";
 import apiClient from "../libraries/api-client-simple";
-import { set } from "react-hook-form";
+// import { set } from "react-hook-form";
 import { useAuthStore } from "../useAuthStore";
 
 const Tasks = () => {
   const navigate = useNavigate();
   const [tasks, setTasks] = React.useState<any[]>([]);
   const [filters, setFilters] = React.useState<Filter>({});
-  const {
-    logOut,
-    access_token,
-    refresh_token,
-    changeAccessToken,
-    changeRefreshToken,
-    loggedInUser,
-  } = useAuthStore((state) => state);
+  const { loggedInUser } = useAuthStore((state) => state);
 
   useEffect(() => {
     if (!loggedInUser) {
@@ -51,13 +44,13 @@ const Tasks = () => {
     navigate(`/update/${taskId}`);
   };
 
-  const handleChangeAccessToken = async () => {
-    await changeAccessToken();
-  };
+  // const handleChangeAccessToken = async () => {
+  //   await changeAccessToken();
+  // };
 
-  const handleChangeRefreshToken = async () => {
-    await changeRefreshToken();
-  };
+  // const handleChangeRefreshToken = async () => {
+  //   await changeRefreshToken();
+  // };
 
   return (
     <div className="space-y-8">

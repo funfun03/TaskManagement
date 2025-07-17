@@ -7,6 +7,7 @@ import Tasks from "./pages/Tasks";
 import UpdateTask from "./pages/UpdateTask";
 import AccessDenied from "./pages/AccessDenied";
 import { useAuthStore } from "./useAuthStore";
+import Customer from "./pages/Customer";
 
 // Navigation component
 
@@ -74,6 +75,16 @@ const Navigation = () => {
             >
               Logout
             </button>
+            {loggedInUser.roles[0].name === "Administrators" && (
+              <button
+                onClick={() => {
+                  navigate("/customer");
+                }}
+                className="ml-4 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 bg-gradient-secondary text-white hover-lift shadow-medium"
+              >
+                Customer Page
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -95,6 +106,8 @@ const TaskManagement = () => {
               <Route path="/create" element={<CreateTask />} />
               <Route path="/update/:id" element={<UpdateTask />} />
               <Route path="/assignee-me" element={<AssigneeMe />} />
+              <Route path="/customer" element={<Customer />} />
+
               <Route path="*" element={<AccessDenied />} />
             </Routes>
           </div>

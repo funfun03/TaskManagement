@@ -3,9 +3,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 // import { login } from "../services";
 import { useNavigate } from "react-router";
-import { useContext } from "react";
-import { LoginContext } from "../context/context";
-import { apiClient } from "../libraries/api-client";
+// import { useContext } from "react";
+// import { LoginContext } from "../context/context";
+// import { apiClient } from "../libraries/api-client";
 import { useAuthStore } from "../useAuthStore";
 
 interface IFormInput {
@@ -30,7 +30,7 @@ const validationSchema: yup.ObjectSchema<IFormInput> = yup.object({
 const Login = () => {
   // const { setUser } = useContext(LoginContext);
   const navigate = useNavigate();
-  const { login } = useAuthStore((state) => state);
+  const { login, loggedInUser } = useAuthStore((state) => state);
   const {
     register,
     handleSubmit,
@@ -59,6 +59,11 @@ const Login = () => {
       alert("Login failed. Please try again.");
     }
   };
+
+  if (loggedInUser) {
+    navigate("/tasks");
+    return;
+  }
 
   return (
     <div className="flex justify-center items-center min-h-screen -mt-20">
