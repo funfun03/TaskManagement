@@ -8,6 +8,9 @@ import UpdateTask from "./pages/UpdateTask";
 import AccessDenied from "./pages/AccessDenied";
 import { useAuthStore } from "./useAuthStore";
 import Customer from "./pages/Customer";
+// import routes from "./routes/index";
+import Users from "./pages/Users";
+import Roles from "./pages/Roles";
 
 // Navigation component
 
@@ -20,10 +23,34 @@ const Navigation = () => {
     return null;
   }
 
+  // Define all valid routes for logged-in users
+  const validRoutes = [
+    "/tasks",
+    "/create",
+    "/assignee-me",
+    "/customer",
+    "/users",
+    "/roles",
+  ];
+
+  // Check if current path is valid
+  const isValidRoute = validRoutes.some(
+    (route) =>
+      location.pathname === route ||
+      location.pathname.startsWith(route + "/") || // For dynamic routes like /update/123
+      location.pathname.startsWith("/update/") // Specifically for update routes
+  );
+
+  if (!loggedInUser || (loggedInUser && !isValidRoute)) {
+    return null;
+  }
+
   const navItems = [
     { path: "/tasks", label: "Tasks", exact: true },
     { path: "/create", label: "Create Task", exact: false },
     { path: "/assignee-me", label: "Assigned to Me", exact: false },
+    { path: "/users", label: "Users", exact: false },
+    { path: "/roles", label: "Roles", exact: false },
   ];
 
   const isActive = (path: string, exact: boolean) => {
@@ -42,7 +69,10 @@ const Navigation = () => {
               <span className="text-white font-bold text-lg">T</span>
             </div>
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <h1
+                onClick={() => navigate("/")}
+                className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent"
+              >
                 TaskFlow
               </h1>
               <p className="text-sm text-gray-500">
@@ -59,8 +89,8 @@ const Navigation = () => {
                 to={item.path}
                 className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover-lift ${
                   isActive(item.path, item.exact)
-                    ? "bg-gradient-primary text-white shadow-medium"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    ? "bg-gradient-secondary text-white"
+                    : "text-gray-700"
                 }`}
               >
                 {item.label}
@@ -75,7 +105,7 @@ const Navigation = () => {
             >
               Logout
             </button>
-            {loggedInUser.roles[0].name === "Administrators" && (
+            {/* {loggedInUser.roles[0].name === "Administrators" && (
               <button
                 onClick={() => {
                   navigate("/customer");
@@ -84,7 +114,7 @@ const Navigation = () => {
               >
                 Customer Page
               </button>
-            )}
+            )} */}
           </div>
         </div>
       </div>
@@ -107,6 +137,9 @@ const TaskManagement = () => {
               <Route path="/update/:id" element={<UpdateTask />} />
               <Route path="/assignee-me" element={<AssigneeMe />} />
               <Route path="/customer" element={<Customer />} />
+              <Route path="/users" element={<Users />} />
+              <Route path="/roles" element={<Roles />} />
+              {/* <Route path="/customer" element={<Customer />} /> */}
 
               <Route path="*" element={<AccessDenied />} />
             </Routes>

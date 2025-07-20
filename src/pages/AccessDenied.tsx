@@ -1,8 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+// import { useAuthStore } from "../useAuthStore";
 
 const AccessDenied: React.FC = () => {
   const navigate = useNavigate();
+  // const { loggedInUser } = useAuthStore((state) => state);
 
   return (
     <div className="min-h-screen flex items-center justify-center -mt-20 p-6">

@@ -25,3 +25,18 @@ export interface Filter {
   priority?: string;
   title?: string;
 }
+
+export interface UserProfile {
+  id?: number;
+  fullName: string;
+  username: string;
+  status?: "active" | "inactive";
+  roles?: Role[];
+}
+
+export interface Role {
+  id?: number;
+  code: string;
+  name: string;
+  description?: string;
+}
